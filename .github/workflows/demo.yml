@@ -10,6 +10,7 @@ jobs:
       - name: Get code
         uses: actions/checkout@v6
       - name: Install dependencies
+        working-directory: ./04_Practice_Project
         run: npm ci
       - name: Lint code
         working-directory: ./04_Practice_Project
