@@ -9,12 +9,23 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v6
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        #it needs path to know what to cache, also a key to retrieve and use it
+        #on a runmer
+        with:
+          path: ~/.npm
+          #Unique hash based on the contents of the files
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         working-directory: ./04_Practice_Project
         run: npm ci
+
       - name: Lint code
         working-directory: ./04_Practice_Project
         run: npm run lint
+
       - name: Test code
         working-directory: ./04_Practice_Project
         run: npm run test
@@ -26,9 +37,17 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v6
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install dependencies
         working-directory: ./04_Practice_Project
         run: npm ci
+
       - name: Build website
         working-directory: ./04_Practice_Project
         run: npm run build
@@ -51,10 +70,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-files
+
       - name: List dist-files
         run: ls 
+
       - name: Output file name
           #needs is used to reference outputs from previous jobs
         run: echo "${{ needs.build.outputs.script-file}}"
+        
       - name: Deploy
         run: echo "Deploying..."
